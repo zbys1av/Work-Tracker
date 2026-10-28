@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Report — швидкий облік</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main id="compact-view">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">📅</div>
+        <div><strong>Daily Report</strong><span>Швидкий облік</span></div>
+      </div>
+      <button type="button" id="expand" class="expand" aria-label="Розгорнути Daily Report" title="Розгорнути тут, без нового вікна">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M8 3H4a1 1 0 0 0-1 1v4M16 3h4a1 1 0 0 1 1 1v4M3 16v4a1 1 0 0 0 1 1h4M21 16v4a1 1 0 0 1-1 1h-4"/></svg>
+        <span>Розгорнути</span>
+      </button>
+    </header>
+    <section class="current" aria-label="Дзвінки за сьогодні">
+      <div class="today" id="date"></div>
+      <div class="sheet-caption" id="sheet-name"></div>
+      <div class="display"><div class="count" id="count">—</div><div class="goal" id="goal">/ —<span>ціль на день</span></div></div>
+      <div class="progress"><div id="progress"></div></div>
+      <div class="status" id="status">Завантаження…</div>
+      <div class="controls"><button id="minus" class="counter secondary" type="button" aria-label="Мінус один дзвінок">−1</button><button id="plus" class="counter primary" type="button" aria-label="Плюс один дзвінок">+1 дзвінок</button></div>
+    </section>
+    <section class="weekly" aria-label="Підсумок тижня">
+      <div><span>Цього тижня</span><strong id="week-total">—</strong></div>
+      <div><span>План з OFF</span><strong id="week-goal">—</strong></div>
+      <div><span>Виконання</span><strong id="week-rate">—</strong></div>
+    </section>
+    <section class="people" aria-labelledby="people-title">
+      <div class="people-title"><h2 id="people-title">Швидкий запис</h2><span>за сьогодні</span></div>
+      <div class="people-tabs" role="tablist" aria-label="Категорія запису">
+        <button id="tab-crit" type="button" role="tab" aria-selected="true" class="active" data-section="crit">Кріти <span id="crit-count">0</span></button>
+        <button id="tab-hard" type="button" role="tab" aria-selected="false" data-section="hard">Складні люди <span id="hard-count">0</span></button>
+      </div>
+      <form id="people-form" class="people-form">
+        <label class="small-label" for="brand">Бренд <span class="optional">(необов'язково)</span></label>
+        <select id="brand"><option value="">Без бренду</option></select>
+        <label class="small-label" for="person-link">Посилання або ID</label>
+        <input id="person-link" type="text" placeholder="Посилання / ID" autocomplete="off">
+        <label class="small-label" for="person-note">Опис</label>
+        <textarea id="person-note" rows="2" placeholder="Короткий коментар…"></textarea>
+        <button class="add-person" type="submit" id="add-person">+ Додати запис</button>
+      </form>
+      <div class="people-list-head"><span>Записи за сьогодні</span><span id="people-list-count"></span></div>
+      <div id="people-list" class="people-list"><div class="empty">Поки записів немає.</div></div>
+    </section>
+    <footer class="foot"><span id="save-status" role="status">Дані зберігаються автоматично</span><button id="dashboard-link" type="button">Відкрити у вкладці ↗</button></footer>
+  </main>
+  <section id="expanded-view" hidden aria-label="Повний Daily Report">
+    <div class="expanded-topbar">
+      <div class="expanded-heading"><span class="expanded-icon" aria-hidden="true">📅</span><strong>Daily Report</strong><span>Повний звіт</span></div>
+      <div class="expanded-actions">
+        <button id="open-tab" type="button" title="Відкрити повний звіт в окремій вкладці">У вкладці ↗</button>
+        <button id="collapse" type="button" class="collapse" title="Повернути компактний режим">↙ Згорнути</button>
+      </div>
+    </div>
+    <iframe id="dashboard-frame" title="Повний Daily Report" loading="eager"></iframe>
+  </section>
+  <script src="popup.js"></script>
+</body>
+</html>
