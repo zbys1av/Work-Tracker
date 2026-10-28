@@ -118,8 +118,8 @@ function strip(){const sh=cur(),t=iso(new Date());let h='';
  });
  $('#strip').innerHTML=h;const on=document.querySelector('.chip.on');if(on)on.scrollIntoView({inline:'nearest',block:'nearest'})}
 function detail(){const sh=cur(),d=sh.days[sel],dt=add(sh.start,sel),c=sh.cfg,pl=(k,o)=>`<div class="pills">${o.map(x=>`<button data-p="${k}|${x}" class="${d[k]==x?'on':''}">${x}</button>`).join('')}</div>`;
- const sec=c.sections.map(s=>{const it=d.items[s]||[];return `<div class="sec"><h3>${esc(s)}<button data-add="${esc(s)}" style="padding:1px 9px">＋</button></h3>`+it.map((e,i)=>{const bi=c.brands.indexOf(e.b);
-  return `<div class="e"><button class="${bi>=0?'b'+(bi%3+1):''}" data-br="${esc(s)}|${i}" title="Бренд">${e.b?esc(e.b.slice(0,1)):'·'}</button><input data-e="${esc(s)}|${i}|l" value="${esc(e.l)}" placeholder="посилання / ID"><input data-e="${esc(s)}|${i}|d" value="${esc(e.d)}" placeholder="опис"><button class="x" data-del="${esc(s)}|${i}">✕</button></div>`}).join('')+(it.length?'':'<div class="mut">Немає записів</div>')+'</div>'}).join('');
+ const sec=c.sections.map(s=>{const it=d.items[s]||[];return `<div class="sec"><h3>${esc(s)}${s.trim().toUpperCase()==='КРІТИ'?'<button data-copy-crits="1" title="Кріти з усіх аркушів за тиждень вибраного дня">Копіювати тиждень (Пн–Нд)</button>':''}<button data-add="${esc(s)}" style="padding:1px 9px">＋</button></h3>`+it.map((e,i)=>{Cases.normalize(e);const bi=c.brands.indexOf(e.b);
+  return `<div class="e"><button class="${bi>=0?'b'+(bi%3+1):''}" data-br="${esc(s)}|${i}" title="Бренд">${e.b?esc(e.b.slice(0,1)):'·'}</button><input data-e="${esc(s)}|${i}|l" value="${esc(e.l)}" type="url" aria-label="Посилання" placeholder="https://…"><input data-e="${esc(s)}|${i}|id" value="${esc(e.id)}" aria-label="ID" placeholder="ID"><input data-e="${esc(s)}|${i}|d" value="${esc(e.d)}" aria-label="Опис" placeholder="опис"><button class="x" data-del="${esc(s)}|${i}">✕</button></div>`}).join('')+(it.length?'':'<div class="mut">Немає записів</div>')+'</div>'}).join('');
  $('#detail').innerHTML=`<div class="dh"><button data-go="-1">←</button><h2>${fmt(dt,{weekday:'long',day:'numeric',month:'long'})}</h2>${pl('load',LV)}${pl('mood',MD)}<button data-off="1" class="${d.off?'on':''}" style="${d.off?'background:var(--soft)':''}">${d.off?'OFF ✓':'OFF'}</button><button data-go="1">→</button></div>
  <div class="two"><div><div class="mut">Дзвінків</div><div class="big" id="big">${dc(d)}</div><div id="plan" class="mut">${planTxt(sel)}</div>
   <div class="cr"><button data-t="-1">−</button><button data-t="1">+1</button><span class="mut" style="margin-left:auto">поправка ±</span><input type="number" id="adj" value="${d.adj||0}" style="width:64px"></div>
@@ -221,11 +221,12 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('click',async e=>{const t=e.target.closest('button');if(!t)return;const D0=t.dataset,d=D();
  if(D0.tab!=null){view='sheet';S.cur=+D0.tab;pickToday();renderAll();save();return}if(D0.ys){const q=D0.ys.split('|');view='sheet';S.cur=+q[0];sel=+q[1];renderAll();return}
+ if(D0.copyCrits){try{const n=await Cases.copy(S,add(cur().start,sel));st(`Скопійовано крітів: ${n}`)}catch(e){st('Не скопійовано: '+e.message,1)}return}
  if(D0.d!=null){go(+D0.d);return}if(D0.go){go(sel+ +D0.go);return}
  if(D0.p){const[k,v]=D0.p.split('|');d[k]=v;detail();refresh();save();return}
  if(D0.off){d.off=d.off?'':'OFF';detail();refresh();save();return}
  if(D0.t){const T=cur().cfg.ticks;if(D0.t>0){const i=Array.from({length:T},(_,k)=>k).find(k=>!d.calls[k]);if(i!=null)d.calls[i]=true;else d.adj=(+d.adj||0)+1}else{if(d.adj>0)d.adj--;else{for(let k=T-1;k>=0;k--)if(d.calls[k]){d.calls[k]=false;break}}}detail();refresh();save();return}
- if(D0.add!=null){(d.items[D0.add]=d.items[D0.add]||[]).push({b:'',l:'',d:''});detail();const a=document.querySelectorAll(`[data-e^="${CSS.escape(D0.add)}|"][data-e$="|l"]`);if(a.length)a[a.length-1].focus();save();return}
+ if(D0.add!=null){(d.items[D0.add]=d.items[D0.add]||[]).push({b:'',id:'',l:'',d:''});detail();const a=document.querySelectorAll(`[data-e^="${CSS.escape(D0.add)}|"][data-e$="|l"]`);if(a.length)a[a.length-1].focus();save();return}
  if(D0.del){const[s,i]=D0.del.split('|');d.items[s].splice(+i,1);detail();save();return}
  if(D0.br){const[s,i]=D0.br.split('|'),en=d.items[s][+i],b=['',...cur().cfg.brands],k=b.indexOf(en.b);en.b=b[(k+1)%b.length];detail();save();return}
  const a=D0.a;if(!a)return;t.closest('details')&&t.closest('details').removeAttribute('open');
@@ -279,7 +280,7 @@ function buildSheet(wb,sh,used){let nm=sh.name.replace(/[\\\/?*\[\]:]/g,'-').sli
    H(r,utc(dt));ws.getCell(r,b).numFmt='dd.mm.yyyy';r++;H(r,utc(dt).toLocaleDateString('en-US',{weekday:'long',timeZone:'UTC'}).toUpperCase());r++;
    [['Навантаження:',d.load,LV],['Настрій:',d.mood,MD]].forEach(([lb,v,l])=>{F(Object.assign(ws.getCell(r,b),{value:lb}),{b:1});ws.mergeCells(r,b+1,r,b+2);const x=ws.getCell(r,b+1);x.value=v||null;F(x);dv(x,l);r++});
    c.sections.forEach((s,si)=>{H(r,s);r++;for(let i=0;i<ms[si];i++){const e=(d.items[s]||[])[i]||{};ws.mergeCells(r,b+1,r,b+2);
-     const q=ws.getCell(r,b-1);q.value=e.b||null;F(q);dv(q,c.brands);const l=ws.getCell(r,b),x=ws.getCell(r,b+1);l.value=e.l||'посилання';x.value=e.d||'опис';F(l,{c:e.l?'FF000000':'FFD9D9D9'});F(x,{c:e.d?'FF000000':'FFD9D9D9'});r++}});
+     const q=ws.getCell(r,b-1);q.value=e.b||null;F(q);dv(q,c.brands);const l=ws.getCell(r,b),x=ws.getCell(r,b+1);const fields=Cases.fields(e);l.value=[fields.id,fields.l].filter(Boolean).join(' — ')||'посилання';x.value=e.d||'опис';F(l,{c:e.l?'FF000000':'FFD9D9D9'});F(x,{c:e.d?'FF000000':'FFD9D9D9'});r++}});
    const adj=d.adj?(d.adj>0?'+':'')+d.adj:'';for(let q=0;q<3;q++)F(ws.getCell(r,b+q),BK);
    ws.getCell(r,b).value={formula:`COUNTIF(${CL(b)}${r+1}:${CL(b+2)}${r+tr},TRUE)${adj}`,result:dc(d)};cnt.push(CL(b)+r);r++;
    if(d.off){ws.mergeCells(r,b,r+tr-1,b+2);const x=ws.getCell(r,b);x.value=d.off;F(x,{b:1,h:'center',f:'FFD9D9D9'})}

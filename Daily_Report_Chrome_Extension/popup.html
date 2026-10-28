@@ -37,11 +37,14 @@
         <button id="tab-crit" type="button" role="tab" aria-selected="true" class="active" data-section="crit">Кріти <span id="crit-count">0</span></button>
         <button id="tab-hard" type="button" role="tab" aria-selected="false" data-section="hard">Складні люди <span id="hard-count">0</span></button>
       </div>
+      <button type="button" id="copy-crits">Копіювати кріти за тиждень (Пн–Нд)</button>
       <form id="people-form" class="people-form">
         <label class="small-label" for="brand">Бренд <span class="optional">(необов'язково)</span></label>
         <select id="brand"><option value="">Без бренду</option></select>
-        <label class="small-label" for="person-link">Посилання або ID</label>
-        <input id="person-link" type="text" placeholder="Посилання / ID" autocomplete="off">
+        <label class="small-label" for="person-link">Посилання</label>
+        <input id="person-link" type="url" placeholder="https://…" autocomplete="off">
+        <label class="small-label" for="person-id">ID</label>
+        <input id="person-id" type="text" placeholder="ID кейса" autocomplete="off">
         <label class="small-label" for="person-note">Опис</label>
         <textarea id="person-note" rows="2" placeholder="Короткий коментар…"></textarea>
         <button class="add-person" type="submit" id="add-person">+ Додати запис</button>
@@ -61,6 +64,7 @@
     </div>
     <iframe id="dashboard-frame" title="Повний Daily Report" loading="eager"></iframe>
   </section>
+  <script src="cases.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

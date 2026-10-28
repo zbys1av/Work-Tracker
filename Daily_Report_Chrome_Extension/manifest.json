@@ -2,9 +2,10 @@
   "manifest_version": 3,
   "name": "Daily Report — Дзвінки та KPI",
   "description": "Швидкі дзвінки, кріти та складні люди у popup з розгортанням до повного звіту без нового вікна.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "permissions": [
-    "storage"
+    "storage",
+    "clipboardWrite"
   ],
   "action": {
     "default_title": "Daily Report — швидкий облік",

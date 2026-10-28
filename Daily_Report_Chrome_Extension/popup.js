@@ -44,7 +44,7 @@ function renderPeople(){
  const section=selections[sectionType],items=d&&section?listItems(d,section):[];
  const possible=!!d&&!!section;
  $('#add-person').disabled=!possible||busy;
- $('#person-link').disabled=$('#person-note').disabled=$('#brand').disabled=!possible||busy;
+ $('#person-id').disabled=$('#person-link').disabled=$('#person-note').disabled=$('#brand').disabled=!possible||busy;
  $('#people-list-count').textContent=items.length?`${items.length} записів`:'';
  const box=$('#people-list');box.replaceChildren();
  if(!possible){const e=document.createElement('div');e.className='empty';e.textContent=!sh?'Немає аркуша для сьогоднішньої дати.':!d?'Для сьогодні немає дня в аркуші.':'Цей розділ не додано в налаштуваннях аркуша.';box.append(e);return;}
@@ -53,7 +53,7 @@ function renderPeople(){
   const index=items.length-1-j;
   const row=document.createElement('div');row.className='person-entry';
   const info=document.createElement('div');info.className='person-entry-info';
-  const title=document.createElement('div');title.className='person-entry-title';title.textContent=[item.b,item.l].filter(Boolean).join(' · ')||'Запис без ID';
+  const title=document.createElement('div');title.className='person-entry-title';title.textContent=[item.b,Cases.fields(item).id,Cases.fields(item).l].filter(Boolean).join(' · ')||'Запис без ID';
   const description=document.createElement('div');description.className='person-entry-description';description.textContent=item.d||'Без опису';
   info.append(title,description);
   const del=document.createElement('button');del.type='button';del.dataset.remove=String(index);del.textContent='×';del.setAttribute('aria-label','Видалити запис');del.title='Видалити цей запис';
@@ -108,17 +108,17 @@ async function adjust(delta){
  },'Дзвінки збережено');
 }
 async function submitPerson(){
- const brand=$('#brand').value,l=$('#person-link').value.trim(),d=$('#person-note').value.trim(),type=sectionType;
- if(!l&&!d){$('#save-status').textContent='Вкажіть ID / посилання або опис.';$('#person-link').focus();return;}
+ const id=$('#person-id').value.trim(),brand=$('#brand').value,l=$('#person-link').value.trim(),d=$('#person-note').value.trim(),type=sectionType;
+ if(!id&&!l&&!d){$('#save-status').textContent='Вкажіть ID, посилання або опис.';$('#person-link').focus();return;}
  await updateDay((sh,day)=>{
   const section=actualSection(sh,type);
   if(!section)throw Error('Розділ відсутній в аркуші');
   if(!day.items||typeof day.items!=='object')day.items={};
   if(!Array.isArray(day.items[section]))day.items[section]=[];
-  day.items[section].push({b:brand,l,d});
+  day.items[section].push({b:brand,id,l,d});
  },'Запис додано');
  // Очищаємо поля лише за успішного запису.
- if($('#save-status').textContent==='Запис додано'){$('#person-link').value='';$('#person-note').value='';$('#person-link').focus();}
+ if($('#save-status').textContent==='Запис додано'){$('#person-id').value='';$('#person-link').value='';$('#person-note').value='';$('#person-link').focus();}
 }
 async function removePerson(index){
  const type=sectionType;
@@ -155,3 +155,5 @@ chrome.storage.onChanged.addListener((changes,area)=>{
  try{const result=await chrome.storage.local.get(KEY);state=result[KEY]||null;initState();}
  catch(err){$('#status').textContent='Помилка сховища: '+err.message;$('#minus').disabled=$('#plus').disabled=true;}
 })();
+
+$('#copy-crits').addEventListener('click',async()=>{try{const n=await Cases.copy(state,iso(new Date()));$('#save-status').textContent=`Скопійовано крітів: ${n}`}catch(e){$('#save-status').textContent='Не скопійовано: '+e.message}});
