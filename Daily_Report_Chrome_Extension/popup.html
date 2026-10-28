@@ -32,12 +32,11 @@
       <div><span>Виконання</span><strong id="week-rate">—</strong></div>
     </section>
     <section class="people" aria-labelledby="people-title">
-      <div class="people-title"><h2 id="people-title">Швидкий запис</h2><span>за сьогодні</span></div>
+      <div class="people-title"><div><h2 id="people-title">Швидкий запис</h2><span>за сьогодні</span></div><button type="button" id="copy-crits" class="copy-week" title="Копіювати кріти за поточний тиждень (понеділок–неділя) з клікабельними ID" aria-label="Копіювати кріти за тиждень, понеділок–неділя"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Тиждень</span></button></div>
       <div class="people-tabs" role="tablist" aria-label="Категорія запису">
         <button id="tab-crit" type="button" role="tab" aria-selected="true" class="active" data-section="crit">Кріти <span id="crit-count">0</span></button>
         <button id="tab-hard" type="button" role="tab" aria-selected="false" data-section="hard">Складні люди <span id="hard-count">0</span></button>
       </div>
-      <button type="button" id="copy-crits">Копіювати кріти за тиждень (Пн–Нд)</button>
       <form id="people-form" class="people-form">
         <label class="small-label" for="brand">Бренд <span class="optional">(необов'язково)</span></label>
         <select id="brand"><option value="">Без бренду</option></select>
