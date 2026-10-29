@@ -209,3 +209,5 @@ input.annual-result.bad{color:var(--bad)!important;border-color:var(--bad)!impor
 body{min-width:360px}
 .e input{min-width:0;width:100%}
 @media(max-width:520px){.e{grid-template-columns:28px minmax(0,1fr) minmax(0,1fr) 26px}.e input[data-e$="|d"]{grid-column:2 / 4;grid-row:2}.e .x{grid-column:4;grid-row:1}}
+
+.drive-backup{border:1px solid var(--line);border-radius:10px;margin:9px 0;background:var(--surface,var(--card));font-size:11px}.drive-backup summary{cursor:pointer;padding:8px 10px;color:var(--acc);font-weight:600}.drive-backup-body{padding:0 10px 10px;display:grid;gap:7px}.drive-backup-body input{width:100%;min-width:0;padding:7px;border:1px solid var(--line);border-radius:7px;background:var(--inp,var(--bg));color:inherit;font:inherit}.drive-backup-actions{display:flex;gap:6px;flex-wrap:wrap}.drive-backup-body button{padding:6px 8px;font:inherit}.drive-backup-body p{margin:0;overflow-wrap:anywhere;color:var(--mut)}.drive-backup-body [role="status"]{color:var(--acc)}

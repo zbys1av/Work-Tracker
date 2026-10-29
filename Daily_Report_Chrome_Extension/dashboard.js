@@ -246,7 +246,7 @@ document.addEventListener('click',async e=>{const t=e.target.closest('button');i
  if(a=='manage'){openManager();return}if(a=='addw'){const s=cur();for(let i=0;i<7;i++)s.days.push(mkDay());renderAll();save()}
  if(a=='dels'){openManager('delete',S.cur);return}
  if(a=='xc')exportX([cur()]);if(a=='xa')exportX(S.sheets);if(a=='xi')$('#fx').click();if(a=='jr')$('#fj').click();
- if(a=='jb'){await dl('daily-report-backup-'+iso(new Date())+'.json',JSON.stringify(S));st('Копію збережено')}});
+ if(a=='jb'){await dl('daily-report-backup-'+iso(new Date())+'.json',DailyBackup.serialize(S));st('Копію збережено')}});
 document.addEventListener('keydown',e=>{if(view=='year'||!$('#sheet-manager').classList.contains('h')||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(e.key=='ArrowLeft')go(sel-1);if(e.key=='ArrowRight')go(sel+1)});
 document.querySelector('.card').addEventListener('change',e=>{const sh=cur(),id=e.target.id,v=e.target.value;if(!id)return;
  if(id=='sn')sh.name=v||'SHEET';if(id=='ss'&&v)sh.start=v;if(id=='sd'){const n=Math.max(1,Math.min(366,+v||1));while(sh.days.length<n)sh.days.push(mkDay());sh.days.length=n}
@@ -838,3 +838,6 @@ window.dailyReceiveExternal = snapshot => {
   pickToday();renderAll();st('Оновлено з іншого вікна');
  } catch(err) { console.error('Storage refresh failed',err); }
 };
+
+// Capture the live state, including edits waiting for the existing save debounce.
+window.dailyBackupSnapshot=()=>JSON.parse(DailyBackup.serialize(S));

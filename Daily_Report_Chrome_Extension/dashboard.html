@@ -7,11 +7,17 @@
 <div class="top"><h1>📅 Daily Report</h1><div id="tabs" class="top" style="margin:0"></div><span id="st"></span>
  <details class="menu"><summary>Файл ▾</summary><div class="dd">
   <button data-a="xc">⬇ Excel — цей аркуш</button><button data-a="xa">⬇ Excel — усі вкладки + річні дані</button><button data-a="xi">⬆ Імпорт / відновлення з Excel</button>
-  <button data-a="jb">💾 Резервна копія (json)</button><button data-a="jr">↺ Відновити з копії</button></div></details></div>
+  <button type="button" data-backup-settings>☁ Google Drive Backup</button><button data-a="jb">💾 Резервна копія (json)</button><button data-a="jr">↺ Відновити з копії</button></div></details></div>
 <div class="card"><div class="bar">
  <label>Назва<input id="sn"></label><label>Перший день<input id="ss" type="date"></label><label>Кількість днів<input id="sd" type="number" min="1" max="366" style="width:90px"></label><label>Ціль, дзвінків на тиждень<input id="swk" type="number" min="1" style="width:120px"></label>
  <button data-a="addw">+ тиждень</button><button data-a="adv" style="margin-left:auto">⚙ Структура</button></div>
  <div class="bar" id="adv"><label>Ticks на день<input id="stk" type="number" min="1" max="60" style="width:90px"></label><label>Розділи (через кому)<input id="ssec" style="width:280px"></label><label>Бренди (через кому)<input id="sbr" style="width:200px"></label><button data-a="dels" style="margin-left:auto;color:var(--bad)">Видалити поточний аркуш…</button></div></div>
+<details id="drive-backup" class="drive-backup"><summary>Google Drive Backup</summary>
+<div class="drive-backup-body"><label for="drive-folder">Папка Google Drive</label><input id="drive-folder" type="url" placeholder="https://drive.google.com/drive/folders/…" autocomplete="off">
+<div class="drive-backup-actions"><button type="button" data-backup-save>Зберегти посилання</button><button type="button" data-backup-open>Відкрити папку</button></div>
+<button type="button" data-backup-start>Зберегти на Google Drive</button>
+<p>JSON спочатку збережеться на комп’ютері. Потім відкриється папка Drive: завантажте цей файл через «Створити → Завантажити файл». Потрібні інтернет, вхід у Google та дозвіл на додавання файлів.</p>
+<p data-backup-local></p><p data-backup-drive></p><p data-backup-status role="status"></p></div></details>
 <div class="stats" id="stats"></div>
 <div class="card"><div id="strip"></div></div>
 <div class="card" id="detail"></div>
@@ -26,5 +32,6 @@
  </div>
 </div>
 <script src="mini-exceljs.js"></script>
+<script src="backup.js"></script>
 <script src="cases.js"></script>
-<script src="dashboard-bootstrap.js"></script></body></html>
+<script src="dashboard-bootstrap.js"></script><script src="backup-ui.js"></script></body></html>
