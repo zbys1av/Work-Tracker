@@ -246,7 +246,7 @@ document.addEventListener('click',async e=>{const t=e.target.closest('button');i
  if(a=='manage'){openManager();return}if(a=='addw'){const s=cur();for(let i=0;i<7;i++)s.days.push(mkDay());renderAll();save()}
  if(a=='dels'){openManager('delete',S.cur);return}
  if(a=='xc')exportX([cur()]);if(a=='xa')exportX(S.sheets);if(a=='xi')$('#fx').click();if(a=='jr')$('#fj').click();
- if(a=='jb'){await dl('daily-report-backup-'+iso(new Date())+'.json',DailyBackup.serialize(S));st('Копію збережено')}});
+ if(a=='jb'){await dl('daily-report-backup-'+iso(new Date())+'.json',await DailyBackup.exportJSON(S));st('Копію збережено')}});
 document.addEventListener('keydown',e=>{if(view=='year'||!$('#sheet-manager').classList.contains('h')||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(e.key=='ArrowLeft')go(sel-1);if(e.key=='ArrowRight')go(sel+1)});
 document.querySelector('.card').addEventListener('change',e=>{const sh=cur(),id=e.target.id,v=e.target.value;if(!id)return;
  if(id=='sn')sh.name=v||'SHEET';if(id=='ss'&&v)sh.start=v;if(id=='sd'){const n=Math.max(1,Math.min(366,+v||1));while(sh.days.length<n)sh.days.push(mkDay());sh.days.length=n}
@@ -261,7 +261,7 @@ $('#fx').addEventListener('change',async e=>{const f=e.target.files[0];e.target.
  const count=typeof result==='number'?result:result.count;
  pickToday();renderAll();flush();st(result?.restored?'Відновлено повний Excel-архів: '+count+' аркушів':'Імпортовано аркушів: '+count);
  }catch(x){st('Помилка імпорту: '+x.message,1)}});
-$('#fj').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const o=JSON.parse(await f.text());if(!o.sheets||!o.sheets.length)throw Error('невірний файл');S=o.sheets[0].weeks?{sheets:o.sheets.map(conv),cur:0}:o;S.cur=0;if(!Array.isArray(S.trash))S.trash=[];if(!S.yearData||typeof S.yearData!=='object')S.yearData={};yearSource='all';pickToday();renderAll();flush();st('Відновлено')}catch(x){st('Помилка: '+x.message,1)}});
+$('#fj').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const o=JSON.parse(await f.text());if(!o.sheets||!o.sheets.length)throw Error('невірний файл');await DailyBackup.restoreSettings(o);S=o.sheets[0].weeks?{sheets:o.sheets.map(conv),cur:0}:o;S.cur=0;if(!Array.isArray(S.trash))S.trash=[];if(!S.yearData||typeof S.yearData!=='object')S.yearData={};yearSource='all';pickToday();renderAll();flush();st('Відновлено')}catch(x){st('Помилка: '+x.message,1)}});
 async function dl(name,data){try{const d=window.claude&&await window.claude.use('downloads');if(d){await d.save({filename:name,data});return}}catch(e){if(e&&e.code=='declined')return}
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data]));a.download=name;a.click()}
 /* ---------- xlsx export ---------- */

@@ -5,6 +5,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTUiIGZpbGw9IiM0ZjQ2ZTUiLz48dGV4dCB4PSIzMiIgeT0iNDUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iNDAiIGZvbnQtZmFtaWx5PSJBcHBsZSBDb2xvciBFbW9qaSxTZWdvZSBVSSBFbW9qaSxOb3RvIENvbG9yIEVtb2ppLHNhbnMtc2VyaWYiPvCfk4U8L3RleHQ+PC9zdmc+">
 <link rel="stylesheet" href="dashboard.css"></head><body><div class="wrap">
 <div class="top"><h1>📅 Daily Report</h1><div id="tabs" class="top" style="margin:0"></div><span id="st"></span>
+ <button type="button" data-backup-start>☁ Зберегти на Google Drive</button>
  <details class="menu"><summary>Файл ▾</summary><div class="dd">
   <button data-a="xc">⬇ Excel — цей аркуш</button><button data-a="xa">⬇ Excel — усі вкладки + річні дані</button><button data-a="xi">⬆ Імпорт / відновлення з Excel</button>
   <button type="button" data-backup-settings>☁ Google Drive Backup</button><button data-a="jb">💾 Резервна копія (json)</button><button data-a="jr">↺ Відновити з копії</button></div></details></div>
@@ -15,7 +16,7 @@
 <details id="drive-backup" class="drive-backup"><summary>Google Drive Backup</summary>
 <div class="drive-backup-body"><label for="drive-folder">Папка Google Drive</label><input id="drive-folder" type="url" placeholder="https://drive.google.com/drive/folders/…" autocomplete="off">
 <div class="drive-backup-actions"><button type="button" data-backup-save>Зберегти посилання</button><button type="button" data-backup-open>Відкрити папку</button></div>
-<button type="button" data-backup-start>Зберегти на Google Drive</button>
+
 
 <p data-backup-local></p><p data-backup-drive></p><p data-backup-status role="status"></p></div></details>
 <div class="stats" id="stats"></div>

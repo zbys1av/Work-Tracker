@@ -22,7 +22,7 @@ test('download completion, restart recovery, specific file and no Drive success 
  const store={[Backup.KEY]:{folder:'https://drive.google.com/drive/u/0/folders/abc'},daily_report_v2:structuredClone(state)};
  const w=worker(store);const before=JSON.stringify(store.daily_report_v2);
  assert.equal((await w.send({type:'backup-start'})).ok,true);assert.equal(w.tabs.length,0);assert.equal(store[Backup.KEY].lastLocal,undefined);
- const download=w.downloads.get(1);assert.deepEqual(JSON.parse(decodeURIComponent(download.url.split(',')[1])),state);
+ const download=w.downloads.get(1);assert.deepEqual(JSON.parse(decodeURIComponent(download.url.split(',')[1])),{...state,backupSettings:{googleDriveFolder:store[Backup.KEY].folder}});
  assert.equal((await w.send({type:'backup-start'})).ok,false);
  download.state='complete';const restarted=worker(store,w.downloads);await restarted.send({type:'backup-status'});
  assert.equal(restarted.tabs.length,1);assert.equal(store[Backup.KEY].lastLocal.downloadId,1);assert.match(store[Backup.KEY].driveStatus,/Не підтверджено/);
@@ -39,4 +39,16 @@ test('dashboard snapshot includes latest edits instead of older stored data',asy
  const w=worker({[Backup.KEY]:{folder:'https://drive.google.com/drive/folders/abc'},daily_report_v2:state});
  const live=structuredClone(state);live.latest='unflushed edit';await w.send({type:'backup-start',state:live});
  assert.equal(JSON.parse(decodeURIComponent(w.downloads.get(1).url.split(',')[1])).latest,'unflushed edit');
+});
+
+test('JSON includes folder, restores it separately, and supports old backups',async()=>{
+ let settings={folder:'https://drive.google.com/drive/u/0/folders/abc?usp=sharing',lastLocal:{downloadId:17}};
+ global.chrome={storage:{local:{get:async()=>({[Backup.KEY]:settings}),set:async o=>settings=o[Backup.KEY]}}};
+ const before=JSON.stringify(state),json=JSON.parse(await Backup.exportJSON(state));
+ assert.equal(json.backupSettings.googleDriveFolder,settings.folder);assert.equal(JSON.stringify(state),before);
+ assert.equal(json.backupSettings.lastLocal,undefined);
+ settings={folder:'https://drive.google.com/drive/folders/other',pending:{id:12}};
+ await Backup.restoreSettings(json);assert.equal(settings.folder,json.backupSettings.googleDriveFolder);assert.equal(settings.pending.id,12);
+ await Backup.restoreSettings(state);assert.equal(settings.folder,json.backupSettings.googleDriveFolder);
+ await assert.rejects(Backup.restoreSettings({backupSettings:{googleDriveFolder:'https://evil.test'}}));assert.equal(settings.folder,json.backupSettings.googleDriveFolder);
 });

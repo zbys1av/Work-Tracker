@@ -29,7 +29,7 @@ async function handle(message){
  const url=DailyBackup.folder(s.folder);
  // Dashboard sends its live state; compact popup reads the current shared storage.
  const state=message.state||(await chrome.storage.local.get('daily_report_v2')).daily_report_v2;
- const json=DailyBackup.serialize(state),filename=DailyBackup.filename();
+ const json=DailyBackup.serialize(state,s),filename=DailyBackup.filename();
  const id=await chrome.downloads.download({url:'data:application/json;charset=utf-8,'+encodeURIComponent(json),filename,conflictAction:'uniquify',saveAs:false});
  s.pending={id,filename,folder:url};delete s.error;s.driveStatus='Не підтверджено: очікування локальної копії.';await write(s);
  return reconcile();
